@@ -6,20 +6,19 @@ function Login() {
   const navigate = useNavigate();
   return (
     <AuthLayout>
-      <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center p-4">
-        <h1 className="text-lg font-bold">
+      <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
+        <h3 className="text-xl font-semibold text-black">
           Welcome Back to the Expense Tracker App
-        </h1>
-        <p className="text-sm font-semibold">
+        </h3>
+        <p className="text-xs text-slate-700 mt-[5px] mb-6">
           Please Enter your details for login
         </p>
 
-        <div className="flex flex-1">
-          <form className="space-y-2 bg-gray-50 border border-gray-200 shadow-lg p-4 rounded">
+          <form className="space-y-2">
             <div>
-              <label className="block">Email</label>
+              <label className="block text-lg">Email</label>
               <input
-                className="w-full border outline-none px-4 py-1.5"
+                className="w-full border border-slate-200 px-4 py-3 bg-slate-100 flex justify-between mb-4 mt-3 rounded outline-none"
                 type="email"
                 placeholder="Enter the email"
                 required
@@ -27,27 +26,26 @@ function Login() {
             </div>
 
             <div>
-              <label className="block">Password</label>
+              <label className="block text-lg">Password</label>
               <input
-                className="w-full border outline-none px-4 py-1.5"
+                className="w-full border border-slate-200 px-4 py-3 bg-slate-100 flex justify-between mb-4 mt-3 rounded outline-none"
                 type="password"
                 placeholder="Enter the password"
                 required
               />
             </div>
 
-            <button className="bg-blue-500 rounded w-full px-3 py-1 text-white hover:bg-blue-700">
+            <button className="bg-violet-500 text-sm shadow-lg shadow-purple-600/5 p-2.5 rounded-md my-1 w-full px-4 py-2 text-white hover:bg-violet-600/15 hover:text-purple-600">
               Login
             </button>
             <p className="text-sm">
               You Don't have an account{" "}
-              <button onClick={() => navigate("/signup")} className="hover:un">
+              <button onClick={() => navigate("/signup")} className="underline text-violet-700 mt-3">
                 SignUp
               </button>
             </p>
           </form>
         </div>
-      </div>
     </AuthLayout>
   );
 }
