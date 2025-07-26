@@ -1,8 +1,15 @@
 import React from 'react'
+import DashboardLayout from '../../components/Layout/DashboardLayout'
 
 function Home() {
   return (
-    <div>Home</div>
+    <>
+    <DashboardLayout>
+      <div className='bg-slate-100'>
+        Home
+      </div>
+    </DashboardLayout>
+    </>
   )
 }
 
