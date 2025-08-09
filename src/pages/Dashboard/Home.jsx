@@ -1,8 +1,13 @@
 import React from 'react'
+import DashboardLayout from '../../components/Layout/DashboardLayout'
 
 function Home() {
   return (
-    <div>Home</div>
+    <>
+    <DashboardLayout>
+      
+    </DashboardLayout>
+    </>
   )
 }
 

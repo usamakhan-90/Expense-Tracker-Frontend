@@ -1,8 +1,13 @@
 import React from 'react'
+import DashboardLayout from '../../components/Layout/DashboardLayout'
 
 function Income() {
   return (
-    <div>Income</div>
+    <>
+    <DashboardLayout>
+      
+    </DashboardLayout>
+    </>
   )
 }
 
