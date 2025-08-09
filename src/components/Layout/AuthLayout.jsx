@@ -1,22 +1,20 @@
-import React from 'react'
-import home from '../../assets/images/home.jpeg'
-function AuthLayout({children}) {
+import React from "react";
+import home from "../../assets/images/home.jpeg";
+function AuthLayout({ children }) {
   return (
     <>
-    <div className='flex'>
-      <div className='w-screen h-screen md:w-[60%] px-12 pt-8 pb-12'>
-        <h2 className='text-lg font-medium text-black'>Expense Tracker</h2>
-        {
-          children
-        }
-      </div>
+      <div className="flex">
+        <div className="md:w-[60vw] w-screen h-screen px-12 pt-8 pb-12">
+          <h1 className="md:text-2xl  font-medium text-black">Expense Tracker</h1>
+          {children}
+        </div>
 
-      <div className='w-[40%] bg-violet-300 hidden md:flex justify-center items-center'>
-        <img className='object-cover w-64 md:w-[90%] rounded-lg' src={home} alt="" />
+        <div className="w-[40vw] hidden md:flex justify-center items-center bg-violet-500  bg-cover overflow-hidden p-8">
+          <img className="lg:w-[90%] w-64 rounded-lg" src={home} alt="" />
+        </div>
       </div>
-    </div>
     </>
-  )
+  );
 }
 
-export default AuthLayout
+export default AuthLayout;
