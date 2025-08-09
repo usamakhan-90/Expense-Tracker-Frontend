@@ -1,8 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { register } from "module";
-import { data } from "react-router-dom";
-
-
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const authApi = createApi({
     reducerPath: 'authApi',
