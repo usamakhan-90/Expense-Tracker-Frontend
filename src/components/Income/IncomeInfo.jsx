@@ -31,7 +31,7 @@ function IncomeInfo({ source, icon, date, amount, show, onDelete }) {
           {show && (
             <DeleteAlert
               onConfirm={handleDelete}
-              title={`Delete ${category}`}
+              title={`Delete ${source}`}
               description={`Are you sure you want to delete this ${source} income record`}
             >
               <button>

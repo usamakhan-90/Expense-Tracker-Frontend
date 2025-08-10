@@ -4,7 +4,7 @@ import {
   HiMiniArrowTrendingUp,
   HiMiniArrowTrendingDown,
 } from "react-icons/hi2";
-import { useGetDashboardQuery } from "../../features/dashboard/dashboardApi";
+import { useGetDashboardQuery } from "../../features/dashboard/dashboardApi"; 
 function RecentTranscation() {
   const { data } = useGetDashboardQuery();
 
