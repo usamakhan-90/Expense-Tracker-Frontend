@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FiDownload } from "react-icons/fi";
 import IncomeInfo from "./IncomeInfo";
 import { useDownloadIncomeExcelMutation, useGetAllIncomeQuery } from "../../features/income/incomeApi";
@@ -7,7 +7,11 @@ import { useDownloadIncomeExcelMutation, useGetAllIncomeQuery } from "../../feat
 
 function IncomeList() {
 
-  const {data} = useGetAllIncomeQuery();
+  const {data, refetch} = useGetAllIncomeQuery();
+
+  useEffect(()=>{
+    refetch();
+  }, [refetch])
 
   const [downloadIncomeExcel] = useDownloadIncomeExcelMutation();
 
