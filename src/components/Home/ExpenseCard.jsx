@@ -13,7 +13,7 @@ function ExpenseCard() {
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-white shadow-lg border border-gray-50 outline-none p-4 rounded-md">
+      <div className="bg-white shadow-md border border-gray-200 p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-normal">Expenses</h2>
           <button

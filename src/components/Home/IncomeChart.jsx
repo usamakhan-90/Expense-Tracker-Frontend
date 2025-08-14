@@ -1,113 +1,155 @@
 import React from "react";
-import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart } from "recharts";
-
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { Pie, PieChart, Cell, Label, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useGetDashboardQuery } from "../../features/dashboard/dashboardApi";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 
-export const description = "A donut chart with text";
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
-const chartData = [
-  { browser: "balance", visitors: 5000, fill: "#B95CF4" },
-  { browser: "income", visitors: 2000, fill: "#00FF00" },
-  { browser: "expense", visitors: 4000, fill: "#FF0000" },
-];
+export default function IncomeChart() {
+  const { data, isLoading, error } = useGetDashboardQuery();
+  
+  // Process API data for the chart
+  const { chartData, totalIncome } = React.useMemo(() => {
+    let incomeData = [];
+    let total = 0;
+    
+    if (data?.last60DaysIncome?.transaction) {
+      // Group by source and sum amounts
+      const incomeBySource = data.last60DaysIncome.transaction.reduce((acc, transaction) => {
+        const source = transaction.source || 'Other';
+        const amount = Number(transaction.amount) || 0;
+        
+        if (!acc[source]) {
+          acc[source] = 0;
+        }
+        acc[source] += amount;
+        total += amount;
+        
+        return acc;
+      }, {});
+      
+      // Convert to array format and sort by amount (descending)
+      incomeData = Object.entries(incomeBySource)
+        .map(([name, value]) => ({
+          name,
+          value,
+          percentage: (value / total * 100).toFixed(0) + '%'
+        }))
+        .sort((a, b) => b.value - a.value);
+    }
+    
+    return {
+      chartData: incomeData,
+      totalIncome: total
+    };
+  }, [data]);
 
-const chartConfig = {
-  visitors: {
-    label: "Balance",
-  },
-  chrome: {
-    label: "Income",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Expense",
-    color: "var(--chart-2)",
-  },
-};
-function IncomeChart() {
-  const Income = React.useMemo(() => {
-    return chartData.find((item) => item.browser === "income")?.visitors || 0;
-  }, []);
-  return (
-    <>
-      <Card className="flex flex-col">
+  if (isLoading) {
+    return (
+      <Card className="flex flex-col h-full">
         <CardHeader className="items-center pb-0">
-          <CardTitle>Last 60 days Income</CardTitle>
+          <CardTitle>Last 60 Days Income</CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 pb-0">
-          <ChartContainer
-            config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
-          >
+        <CardContent className="flex-1 pb-0 h-[250px] flex items-center justify-center">
+          <p>Loading income data...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="flex flex-col h-full">
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Last 60 Days Income</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0 h-[250px] flex items-center justify-center text-red-500">
+          <p>Error loading income data</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!chartData || chartData.length === 0) {
+    return (
+      <Card className="flex flex-col h-full">
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Last 60 Days Income</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0 h-[250px] flex items-center justify-center text-gray-500">
+          <p>No income data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="flex flex-col h-full">
+      <CardHeader className="items-center pb-0">
+        <CardTitle className="text-lg">Last 60 Days Income</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-1 pb-0">
+        <div className="h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
               <Pie
                 data={chartData}
-                dataKey="visitors"
-                nameKey="browser"
-                innerRadius={75}
-                strokeWidth={5}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={90}
+                paddingAngle={2}
+                dataKey="value"
+                label={({ name, percentage }) => `${name} ${percentage}`}
+                labelLine={false}
               >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
                 <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
-                          >
-                            {Income.toLocaleString()}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy + 24}
-                            className="fill-muted-foreground"
-                          >
-                            Income
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  }}
+                  value={`$${totalIncome.toLocaleString()}`}
+                  position="center"
+                  className="text-2xl font-bold fill-foreground"
                 />
               </Pie>
+              <Tooltip 
+                formatter={(value, name, props) => [
+                  `$${Number(value).toLocaleString()}`,
+                  props.payload.name
+                ]}
+              />
             </PieChart>
-          </ChartContainer>
-        </CardContent>
-        <CardFooter className="flex-col gap-2 text-sm">
-          <div className="flex items-center gap-2 leading-none font-medium">
-            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-          </div>
-          <div className="text-muted-foreground leading-none">
-            Showing total visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
-    </>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+      <CardFooter className="flex-col gap-1 text-sm pt-0">
+        <div className="flex items-center justify-center gap-2 leading-none font-medium">
+          {data?.last60DaysIncome?.percentageChange > 0 ? (
+            <>
+              <span className="text-green-500">
+                +{data.last60DaysIncome.percentageChange}%
+              </span>
+              <TrendingUp className="h-4 w-4 text-green-500" />
+            </>
+          ) : data?.last60DaysIncome?.percentageChange < 0 ? (
+            <>
+              <span className="text-red-500">
+                {data.last60DaysIncome.percentageChange}%
+              </span>
+              <TrendingDown className="h-4 w-4 text-red-500" />
+            </>
+          ) : (
+           <></>
+          )}
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
-
-export default IncomeChart;

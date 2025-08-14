@@ -37,9 +37,9 @@ function IncomeOverview() {
   const { data: incomeData, refetch, isLoading, error } = useGetAllIncomeQuery();
   
   // DEBUG: Add console logs to see what data you're getting
-  console.log("Income Data:", incomeData);
-  console.log("Is Loading:", isLoading);
-  console.log("Error:", error);
+  // console.log("Income Data:", incomeData);
+  // console.log("Is Loading:", isLoading);
+  // console.log("Error:", error);
   
   // Transform data for daily chart display
   const chartData = useMemo(() => {

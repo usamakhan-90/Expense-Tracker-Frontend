@@ -1,12 +1,13 @@
 import React from "react";
 import { BsArrowRight } from "react-icons/bs";
+import { LuLoader } from "react-icons/lu";
 import {
   HiMiniArrowTrendingUp,
   HiMiniArrowTrendingDown,
 } from "react-icons/hi2";
 import { useGetDashboardQuery } from "../../features/dashboard/dashboardApi"; 
 function RecentTranscation() {
-  const { data } = useGetDashboardQuery();
+  const { data, isLoading, isError } = useGetDashboardQuery();
 
   const recentTranscation = data?.recentTranscations || [];
 
@@ -14,9 +15,17 @@ function RecentTranscation() {
     const options = { day: "numeric", month: "short" };
     return new Date(dateString).toLocaleDateString("en-Us", options);
   };
+
+  if(isLoading)
+  {
+    return (
+      <LuLoader className="flex justify-center items-center transition-all duration-300 rotate-[360]" size={20}/>
+    )
+    
+  }
   return (
     <>
-      <div className="bg-white shadow-lg border border-gray-50 outline-none p-4 rounded-md">
+      <div className="bg-white shadow-md border border-gray-200 p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold text-gray-800">
             Recent Transactions

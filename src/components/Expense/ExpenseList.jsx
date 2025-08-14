@@ -6,10 +6,14 @@ import { useDownloadExpenseExcelMutation, useGetAllExpenseQuery } from "../../fe
 function ExpenseList() {
 
   const { data} = useGetAllExpenseQuery();
+  
+  console.log(data)
 
   const [downloadExpenseExcel] = useDownloadExpenseExcelMutation();
 
   const expenseData = Array.isArray(data?.expenses) ? data.expenses : [];
+
+  console.log(expenseData)
 
   console.log(expenseData);
 
