@@ -10,7 +10,8 @@ export const expenseApi = createApi({
 
     endpoints: (builder) => ({
         getAllExpense: builder.query({
-            query: () => '/get-expense'
+            query: () => '/get-expense',
+            providesTags: ["Expense"]
         }),
 
         addExpense: builder.mutation({
@@ -18,14 +19,16 @@ export const expenseApi = createApi({
                 url: '/create-expense',
                 method: "POST",
                 body: data
-            })
+            }),
+            providesTags: ["Expense"],
         }),
 
         deleteExpense: builder.mutation({
             query: (id) => ({
                 url: `/delete-expense/${id}`,
                 method: "DELETE"
-            })
+            }),
+            invalidatesTags: ["Expense"],
         }),
 
         downloadExpenseExcel: builder.mutation({

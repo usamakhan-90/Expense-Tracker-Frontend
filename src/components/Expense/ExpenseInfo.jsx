@@ -2,15 +2,21 @@ import React from "react";
 import { HiMiniArrowTrendingDown } from "react-icons/hi2";
 import { RiDeleteBinLine } from "react-icons/ri";
 import DeleteAlert from "../CommonComponent/DeleteAlert";
-function ExpenseInfo({ icon, category, date, amount, show }) {
+import { useDeleteExpenseMutation } from "../../features/expense/expenseApi";
+function ExpenseInfo({ icon, category, date, amount, show, id }) {
 
    const formatData = (dateString) => {
     const options = { day: "numeric", month: "short" };
     return new Date(dateString).toLocaleDateString("en-Us", options);
   };
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete();
+
+  const [deleteExpense] = useDeleteExpenseMutation();
+  const handleDelete = async () => {
+    try {
+      await deleteExpense(id).unwrap();
+      console.log("Expense delete successfully")
+    } catch (error) {
+      console.log("Error in delete Api", error)
     }
   };
   return (

@@ -55,6 +55,7 @@ function IncomeList() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {incomeData.map((item) => (
               <IncomeInfo  key={item._id || item.id}
+                id = {item._id}
                 source = {item.source}
                 icon = {item.icon}
                 date = {item.date}

@@ -10,7 +10,8 @@ export const incomeApi = createApi({
 
     endpoints: (builder) => ({
         getAllIncome: builder.query({
-            query: () => '/get-income'
+            query: () => '/get-income',
+            providesTags: ["Income"],
         }),
 
         addIncome: builder.mutation({
@@ -18,14 +19,16 @@ export const incomeApi = createApi({
                 url: '/create-income',
                 method: "POST",
                 body: data
-            })
+            }),
+            providesTags: ["Income"],
         }),
 
         deleteIncome: builder.mutation({
             query: (id) => ({
                 url: `/delete-income/${id}`,
                 method: "DELETE"
-            })
+            }),
+            invalidatesTags: ["Income"],
         }),
 
         downloadIncomeExcel: builder.mutation({

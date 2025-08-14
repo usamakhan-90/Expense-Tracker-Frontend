@@ -1,18 +1,24 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { HiMiniArrowTrendingUp } from "react-icons/hi2";
 import { RiDeleteBinLine } from "react-icons/ri";
 import DeleteAlert from "../CommonComponent/DeleteAlert";
-function IncomeInfo({ source, icon, date, amount, show, onDelete }) {
+import { useDeleteIncomeMutation } from "../../features/income/incomeApi";
+function IncomeInfo({ source, icon, date, amount, show, onDelete, id }) {
   const formatData = (dateString) => {
     const options = { day: "numeric", month: "short" };
     return new Date(dateString).toLocaleDateString("en-Us", options);
   };
 
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete();
+  const [deleteIncome] = useDeleteIncomeMutation();
+  const handleDelete =async () => {
+    try {
+      await deleteIncome(id).unwrap();
+      console.log("Deleted successfully")
+    } catch (error) {
+      console.log("Faild to delete", error)
     }
   };
+
   return (
     <>
       <div className="flex justify-between items-center mt-3">
