@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardLayout from "../../components/Layout/DashboardLayout";
 import { LuHandCoins, LuWalletMinimal } from "react-icons/lu";
 import { IoMdCard } from "react-icons/io";
@@ -13,7 +13,11 @@ import { useGetDashboardQuery } from "../../features/dashboard/dashboardApi";
 
 function Home() {
 
-  const {data} = useGetDashboardQuery();
+  const {data, refetch} = useGetDashboardQuery();
+
+  useEffect(()=>{
+    refetch();
+  }, refetch)
   console.log(data)
   return (
     <>
