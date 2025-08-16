@@ -13,7 +13,6 @@ function IncomeInfo({ source, icon, date, amount, show, onDelete, id }) {
   const handleDelete =async () => {
     try {
       await deleteIncome(id).unwrap();
-      console.log("Deleted successfully")
     } catch (error) {
       console.log("Faild to delete", error)
     }

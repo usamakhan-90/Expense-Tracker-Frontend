@@ -9,7 +9,6 @@ function ExpenseCard() {
 
   const expenses = data?.last30DaysExpense?.transaction || [];
 
-  console.log(expenses);
   const navigate = useNavigate();
   return (
     <>

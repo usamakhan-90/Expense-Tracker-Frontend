@@ -31,36 +31,32 @@ const chartConfig = {
 function IncomeOverview() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // Get data from RTK Query
   const { data: incomeData, refetch, isLoading, error } = useGetAllIncomeQuery();
   
-  // Transform data for daily chart display
   const chartData = useMemo(() => {
-    console.log("Processing income data:", incomeData);
     
     if (!incomeData) {
       console.log("No income data available");
       return [];
     }
-    
-    // Handle different data structures
+
     let dataArray = incomeData;
     
-    // If data is wrapped in an object, extract the array
+
     if (incomeData.data && Array.isArray(incomeData.data)) {
       dataArray = incomeData.data;
     } else if (incomeData.incomes && Array.isArray(incomeData.incomes)) {
       dataArray = incomeData.incomes;
     } else if (!Array.isArray(incomeData)) {
-      console.log("Data is not an array:", typeof incomeData);
+      // console.log("Data is not an array:", typeof incomeData);
       return [];
     }
     
-    console.log("Data array to process:", dataArray);
+    // console.log("Data array to process:", dataArray);
     
-    // Group income by date
+
     const dailyIncome = dataArray.reduce((acc, income) => {
-      console.log("Processing income item:", income);
+      // console.log("Processing income item:", income);
       
       // Try different possible date field names
       const dateField = income.date || income.createdAt || income.created_at || income.dateCreated;

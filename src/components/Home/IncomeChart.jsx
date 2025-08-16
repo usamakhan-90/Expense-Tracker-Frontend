@@ -15,13 +15,13 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'
 export default function IncomeChart() {
   const { data, isLoading, error } = useGetDashboardQuery();
   
-  // Process API data for the chart
+
   const { chartData, totalIncome } = React.useMemo(() => {
     let incomeData = [];
     let total = 0;
     
     if (data?.last60DaysIncome?.transaction) {
-      // Group by source and sum amounts
+
       const incomeBySource = data.last60DaysIncome.transaction.reduce((acc, transaction) => {
         const source = transaction.source || 'Other';
         const amount = Number(transaction.amount) || 0;

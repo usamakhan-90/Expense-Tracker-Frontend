@@ -11,7 +11,6 @@ import {
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 
 export const description = "Last 30 Days Expenses Bar Chart";
@@ -19,12 +18,10 @@ export const description = "Last 30 Days Expenses Bar Chart";
 function ExpenseChart() {
   const { data, isLoading, error } = useGetDashboardQuery();
 
-  // Transform API data into chart format
+
   const chartData = React.useMemo(() => {
     if (!data?.last30DaysExpense?.transaction) return [];
 
-    // Group by day or week depending on your data structure
-    // This example assumes each transaction has a date and amount
     const dailyExpenses = data.last30DaysExpense.transaction.reduce((acc, transaction) => {
       const date = new Date(transaction.date).toLocaleDateString('en-US', { 
         month: 'short', 

@@ -22,7 +22,7 @@ function ExpenseOverview() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data, isLoading, isError, refetch } = useGetAllExpenseQuery();
 
-  // Extract expenses array safely
+
   const expenses = useMemo(() => {
     if (!data) return [];
     if (Array.isArray(data)) return data;

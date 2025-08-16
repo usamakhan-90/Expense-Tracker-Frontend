@@ -14,9 +14,7 @@ function ExpenseInfo({ icon, category, date, amount, show, id }) {
   const handleDelete = async () => {
     try {
       await deleteExpense(id).unwrap();
-      console.log("Expense delete successfully")
     } catch (error) {
-      console.log("Error in delete Api", error)
     }
   };
   return (
