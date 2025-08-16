@@ -18,8 +18,6 @@ import {
 } from "@/components/ui/chart";
 import AddIncomeForm from "../Income/AddIncomeForm";
 import { useGetAllIncomeQuery } from "../../features/income/incomeApi";
-// ADD THIS IMPORT - Replace with your actual import path
-
 
 export const description = "A bar chart showing daily income";
 
@@ -35,11 +33,6 @@ function IncomeOverview() {
   
   // Get data from RTK Query
   const { data: incomeData, refetch, isLoading, error } = useGetAllIncomeQuery();
-  
-  // DEBUG: Add console logs to see what data you're getting
-  // console.log("Income Data:", incomeData);
-  // console.log("Is Loading:", isLoading);
-  // console.log("Error:", error);
   
   // Transform data for daily chart display
   const chartData = useMemo(() => {
@@ -115,89 +108,101 @@ function IncomeOverview() {
     refetch(); // Refresh data after adding new income
   };
 
+  // Render the header section (same for both cases)
+  const renderHeader = () => (
+    <CardHeader>
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-lg font-semibold">Income Overview</h1>
+          <p className="text-sm text-slate-500">
+            Track your daily earnings over time and analyze your income trends
+          </p>
+        </div>
+        <div className="flex justify-center items-center">
+          <button
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-violet-200 text-violet-600 px-6 py-2.5 rounded-lg font-normal text-lg cursor-pointer hover:bg-violet-400 hover:text-white"
+          >
+            + Add Income
+          </button>
+        </div>
+      </div>
+    </CardHeader>
+  );
+
+  // Loading state
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[400px]">
-          <p>Loading income data...</p>
-        </CardContent>
-      </Card>
+      <>
+        <Card>
+          <CardContent className="flex items-center justify-center h-[400px]">
+            <p>Loading income data...</p>
+          </CardContent>
+        </Card>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <AddIncomeForm onClose={handleIncomeAdded} />
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
+  // Error state
   if (error) {
     console.error("RTK Query Error:", error);
     return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[400px]">
-          <div className="text-center">
-            <p className="text-red-500">Error loading income data</p>
-            <p className="text-sm text-gray-500 mt-2">Check console for details</p>
-            <button 
-              onClick={() => refetch()} 
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Retry
-            </button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!chartData || chartData.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between">
-            <div>
-              <h1 className="text-lg font-semibold">Income Overview</h1>
-              <p className="text-sm text-slate-500">
-                Track your daily earnings over time and analyze your income trends
-              </p>
-            </div>
-            <div className="flex justify-center items-center">
-              <button
-                onClick={() => setIsDialogOpen(true)}
-                className="bg-violet-200 text-violet-600 px-6 py-2.5 rounded-lg font-normal text-lg cursor-pointer hover:bg-violet-400 hover:text-white"
+      <>
+        <Card>
+          <CardContent className="flex items-center justify-center h-[400px]">
+            <div className="text-center">
+              <p className="text-red-500">Error loading income data</p>
+              <p className="text-sm text-gray-500 mt-2">Check console for details</p>
+              <button 
+                onClick={() => refetch()} 
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
-                + Add Income
+                Retry
               </button>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent className="flex items-center justify-center h-[300px]">
-          <div className="text-center">
-            <p className="text-gray-500">No income data available</p>
-            <p className="text-sm text-gray-400 mt-2">Add some income entries to see the chart</p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <AddIncomeForm onClose={handleIncomeAdded} />
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
+  // No data state
+  if (!chartData || chartData.length === 0) {
+    return (
+      <>
+        <Card>
+          {renderHeader()}
+          <CardContent className="flex items-center justify-center h-[300px]">
+            <div className="text-center">
+              <p className="text-gray-500">No income data available</p>
+              <p className="text-sm text-gray-400 mt-2">Add some income entries to see the chart</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <AddIncomeForm onClose={handleIncomeAdded} />
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
+  // Main component with data
   return (
     <>
       <Card>
-        <CardHeader>
-          <div className="flex justify-between">
-            <div>
-              <h1 className="text-lg font-semibold">Income Overview</h1>
-              <p className="text-sm text-slate-500">
-                Track your daily earnings over time and analyze your income trends
-              </p>
-            </div>
-
-            <div className="flex justify-center items-center">
-              <button
-                onClick={() => setIsDialogOpen(true)}
-                className="bg-violet-200 text-violet-600 px-6 py-2.5 rounded-lg font-normal text-lg cursor-pointer hover:bg-violet-400 hover:text-white"
-              >
-                + Add Income
-              </button>
-            </div>
-          </div>
-        </CardHeader>
+        {renderHeader()}
         <CardContent>
           <ChartContainer className="lg:h-[300px] h-full w-full" config={chartConfig}>
             <BarChart accessibilityLayer data={chartData}>

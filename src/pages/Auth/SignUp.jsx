@@ -210,7 +210,7 @@ function SignUp() {
               />
             </div>
 
-            <Button type="submit">Login</Button>
+            <Button type="submit">Register</Button>
             <p className="sm:text-sm md:text-base text-[#333333]">
               Already have an account{" "}
               <button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useGetAllExpenseQuery } from "../../features/expense/expenseApi";
 import { format, parseISO } from "date-fns";
 import {
@@ -22,43 +22,36 @@ function ExpenseOverview() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data, isLoading, isError, refetch } = useGetAllExpenseQuery();
 
-  // Debugging logs
-  console.log("Raw API data:", data);
-  
-  // Transform API data to show daily expenses
-  const chartData = React.useMemo(() => {
+  // Extract expenses array safely
+  const expenses = useMemo(() => {
     if (!data) return [];
-    
-    // Check if data is an array (direct response) or has expenses property
-    const expenses = Array.isArray(data) ? data : data.expenses || data.dailyExpenses || [];
-    
-    console.log("Expenses data:", expenses);
-
-    // Process and format the data
-    const processedData = expenses.map(expense => {
-      try {
-        return {
-          date: format(parseISO(expense.date), 'MMM dd'),
-          amount: Math.abs(expense.amount)
-        };
-      } catch (error) {
-        console.error("Error processing expense:", expense, error);
-        return null;
-      }
-    }).filter(item => item !== null) // Remove any failed conversions
-      .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort chronologically
-
-    console.log("Processed chart data:", processedData);
-    return processedData;
+    if (Array.isArray(data)) return data;
+    return data?.expenses || [];
   }, [data]);
 
-  // Refetch data when dialog closes
+  // Convert for chart
+  const chartData = useMemo(() => {
+    return expenses.map(expense => {
+      try {
+        return {
+          date: format(parseISO(expense.date), "MMM dd"),
+          amount: Math.abs(expense.amount)
+        };
+      } catch {
+        return null;
+      }
+    }).filter(Boolean)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [expenses]);
+
+  // Refetch when dialog closes
   useEffect(() => {
     if (!isDialogOpen) {
       refetch();
     }
   }, [isDialogOpen, refetch]);
 
+  // ---- UI states ----
   if (isLoading) {
     return (
       <Card>
@@ -73,7 +66,8 @@ function ExpenseOverview() {
     );
   }
 
-  if (isError) {
+  // Updated error condition - only show error if there's an error AND no data at all
+  if (isError && !data) {
     return (
       <Card>
         <CardHeader>
@@ -106,6 +100,7 @@ function ExpenseOverview() {
             </button>
           </div>
         </CardHeader>
+
         <CardContent className="h-[300px]">
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -157,8 +152,9 @@ function ExpenseOverview() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-full flex items-center justify-center text-gray-500">
-              {data ? "No expense data available" : "Failed to load data"}
+            <div className="h-full flex flex-col items-center justify-center text-gray-500 text-center">
+              <p className="text-lg font-semibold">Welcome to the Expense Tracker!</p>
+              <p className="text-sm">Add your first expense to get started.</p>
             </div>
           )}
         </CardContent>

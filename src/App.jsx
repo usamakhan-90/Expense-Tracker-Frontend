@@ -26,7 +26,7 @@ function App() {
 export default App
 
 const Root = () =>{
-  const isAuthenticated = !!localStorage.getItem("tokem");
+  const isAuthenticated = !!localStorage.getItem("token");
 
   return isAuthenticated ? (
     <Navigate to="/dashboard"/>
