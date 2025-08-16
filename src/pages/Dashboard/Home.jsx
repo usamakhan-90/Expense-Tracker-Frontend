@@ -18,7 +18,6 @@ function Home() {
   useEffect(()=>{
     refetch();
   }, refetch)
-  console.log(data)
   return (
     <>
       <DashboardLayout>
