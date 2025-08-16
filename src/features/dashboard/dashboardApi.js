@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const dashboardApi = createApi({
     reducerPath: "dashboardApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:7000/dashboard',
+        baseUrl: 'https://expense-tracker-backend-private-baxy8aea6.vercel.app/dashboard',
         credentials: 'include'
     }),
 
