@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const expenseApi = createApi({
     reducerPath: "expenseApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://expense-tracker-backend-private-baxy8aea6.vercel.app/expense",
+        baseUrl: "https://expense-tracker-backend-rkl09vo60.vercel.app/expense",
         credentials: 'include'
     }),
 
