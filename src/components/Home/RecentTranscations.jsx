@@ -42,7 +42,7 @@ function RecentTranscation() {
             : `-${item.amount.toLocaleString()}`;
           return (
             <div
-              key={item.id}
+              key={item.id || item._id}
               className="flex justify-between items-center mt-3"
             >
               <div className="flex gap-2">

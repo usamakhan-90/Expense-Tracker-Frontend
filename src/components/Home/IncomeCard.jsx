@@ -26,7 +26,7 @@ function IncomeCard() {
 
         {incomes.slice(0, 6).map((item) => (
           <IncomeInfo
-            key={item.id}
+            key={item.id || item._id}
             source={item.source}
             icon={item.icon}
             date={item.date}

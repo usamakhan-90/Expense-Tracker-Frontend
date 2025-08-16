@@ -36,7 +36,7 @@ function IncomeOverview() {
   const chartData = useMemo(() => {
     
     if (!incomeData) {
-      console.log("No income data available");
+      // console.log("No income data available");
       return [];
     }
 
@@ -79,7 +79,7 @@ function IncomeOverview() {
       return acc;
     }, {});
     
-    console.log("Daily income grouped:", dailyIncome);
+    // console.log("Daily income grouped:", dailyIncome);
     
     // Convert to array format for recharts
     const result = Object.entries(dailyIncome)
@@ -95,7 +95,7 @@ function IncomeOverview() {
       .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date
       .slice(-30); // Show last 30 days only (adjust as needed)
     
-    console.log("Final chart data:", result);
+    // console.log("Final chart data:", result);
     return result;
   }, [incomeData]);
 

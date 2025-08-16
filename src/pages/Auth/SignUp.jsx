@@ -8,7 +8,7 @@ import { RxPerson } from "react-icons/rx";
 import { TbUpload } from "react-icons/tb";
 import { MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { useRegisterMutation } from "../../features/auth/authApi";
+import { useLazyGetProfileQuery , useLoginMutation, useRegisterMutation } from "../../features/auth/authApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setUser } from "../../features/auth/authSlice";
@@ -16,6 +16,8 @@ function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [register] = useRegisterMutation();
+  const [login] = useLoginMutation();
+  const [triggerGetProfile] = useLazyGetProfileQuery();
 
   const [formData, setFormData] = useState({
     fullname: "",
@@ -90,9 +92,14 @@ function SignUp() {
       formDataToSend.append("password", formData.password);
       formDataToSend.append("file", selectedImage);
 
-      const response = await register(formDataToSend).unwrap();
+      // const response = await register(formDataToSend).unwrap();
 
-      dispatch(setUser(response.user));
+      await register(formDataToSend).unwrap();
+
+      await login({ email: formData.email, password: formData.password }).unwrap();
+
+      const user = await triggerGetProfile().unwrap();
+      dispatch(setUser(user));
 
       toast.success("Registration successfull! Redirecting...");
 
