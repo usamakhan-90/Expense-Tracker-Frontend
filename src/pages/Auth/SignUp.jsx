@@ -8,10 +8,11 @@ import { RxPerson } from "react-icons/rx";
 import { TbUpload } from "react-icons/tb";
 import { MdDeleteOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { useLazyGetProfileQuery , useLoginMutation, useRegisterMutation } from "../../features/auth/authApi";
+import { useLazyGetProfileQuery, useLoginMutation, useRegisterMutation } from "../../features/auth/authApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setUser } from "../../features/auth/authSlice";
+
 function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function SignUp() {
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -41,12 +43,19 @@ function SignUp() {
 
     if (file) {
       if (!file.type.match("image.*")) {
-        alert("Please select an image file");
+        toast.warning("Please select an image file", {
+          position: "top-right",
+          theme: "colored"
+        });
         return;
       }
 
       if (file.size > 2 * 1024 * 1024) {
-        alert("image size should be less than 2MB");
+        toast.warning("Image size should be less than 2MB", {
+          position: "top-right",
+          theme: "colored"
+        });
+        return;
       }
 
       setSelectedImage(file);
@@ -68,6 +77,7 @@ function SignUp() {
       fileInputRef.current.value = "";
     }
   };
+
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
@@ -76,14 +86,41 @@ function SignUp() {
     e.preventDefault();
 
     if (!formData.fullname || !formData.email || !formData.password) {
-      toast.error("Please fill in all fields");
+      toast.error("Please fill in all fields", {
+        position: "top-right",
+        theme: "colored"
+      });
       return;
     }
 
     if (!selectedImage) {
-      toast.error("Please upload a profile image");
+      toast.error("Please upload a profile image", {
+        position: "top-right",
+        theme: "colored"
+      });
       return;
     }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address", {
+        position: "top-right",
+        theme: "colored"
+      });
+      return;
+    }
+
+    // Password validation (at least 6 characters)
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long", {
+        position: "top-right",
+        theme: "colored"
+      });
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const formDataToSend = new FormData();
@@ -92,16 +129,39 @@ function SignUp() {
       formDataToSend.append("password", formData.password);
       formDataToSend.append("file", selectedImage);
 
-      // const response = await register(formDataToSend).unwrap();
+      // Show loading toast
+      const toastId = toast.loading("Creating your account...", {
+        position: "top-right"
+      });
 
       await register(formDataToSend).unwrap();
+
+      toast.update(toastId, {
+        render: "Account created! Logging you in...",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored"
+      });
 
       await login({ email: formData.email, password: formData.password }).unwrap();
 
       const user = await triggerGetProfile().unwrap();
       dispatch(setUser(user));
 
-      toast.success("Registration successfull! Redirecting...");
+      toast.success("Registration successful! Redirecting to dashboard...", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored"
+      });
 
       setTimeout(() => navigate("/dashboard"), 2000);
     } catch (error) {
@@ -109,14 +169,26 @@ function SignUp() {
 
       // Handle different error cases
       if (error.data?.message === "Email already exists") {
-        toast.error("This email is already registered");
+        toast.error("This email is already registered. Please try logging in.", {
+          position: "top-right",
+          theme: "colored"
+        });
       } else if (error.data?.message) {
-        toast.error(error.data.message);
+        toast.error(error.data.message, {
+          position: "top-right",
+          theme: "colored"
+        });
       } else {
-        toast.error("Registration failed. Please try again.");
+        toast.error("Registration failed. Please try again.", {
+          position: "top-right",
+          theme: "colored"
+        });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <>
       <AuthLayout>
@@ -130,9 +202,10 @@ function SignUp() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
+          theme="colored"
         />
         <div className="h-auto mt-10 md:mt-0 md:w-[100%] flex flex-col justify-center md:h-full">
-          <h3 className="md:text-xl  font-medium text-[#333333] md:mb-1">
+          <h3 className="md:text-xl font-medium text-[#333333] md:mb-1">
             Create An Account
           </h3>
           <p className="md:text-sm text-slate-700 mb-6">
@@ -158,11 +231,12 @@ function SignUp() {
                 className={`absolute size-[30px] rounded-full ${
                   previewImage ? "bg-red-500" : "bg-violet-500"
                 } flex justify-center items-center bottom-0 -right-2 cursor-pointer`}
+                disabled={isLoading}
               >
                 {previewImage ? (
                   <MdDeleteOutline className="text-white" />
                 ) : (
-                  <TbUpload className=" text-white" />
+                  <TbUpload className="text-white" />
                 )}
               </div>
 
@@ -172,34 +246,36 @@ function SignUp() {
                 onChange={handleImageChange}
                 accept="image/*"
                 className="hidden"
+                disabled={isLoading}
               />
             </div>
           </div>
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label className="md:text-lg text-[#333333]">Fullname</Label>
                 <Input
-                  className=""
                   type="text"
-                  name = "fullname"
+                  name="fullname"
                   value={formData.fullname}
                   onChange={handleChange}
                   placeholder="Enter your full name"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className="flex flex-col gap-3">
                 <Label className="md:text-lg text-[#333333]">Email</Label>
                 <Input
-                  className=""
                   type="email"
-                  name= "email"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter the email"
+                  placeholder="Enter your email"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -207,22 +283,38 @@ function SignUp() {
             <div className="flex flex-col gap-3">
               <Label className="text-lg text-[#333333]">Password</Label>
               <Input
-                className=""
-                name= "password"
+                name="password"
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="Enter the Password"
+                placeholder="Enter your password (min. 6 characters)"
+                disabled={isLoading}
               />
             </div>
 
-            <Button type="submit">Register</Button>
-            <p className="sm:text-sm md:text-base text-[#333333]">
-              Already have an account{" "}
+            <Button 
+              className="w-full transition-all duration-300 bg-violet-600 hover:bg-violet-700" 
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Creating Account...
+                </div>
+              ) : (
+                "Register"
+              )}
+            </Button>
+            
+            <p className="sm:text-sm md:text-base text-[#333333] text-center pt-4">
+              Already have an account?{" "}
               <button
+                type="button"
                 onClick={() => navigate("/login")}
-                className="text-violet-500 underline cursor-pointer"
+                className="text-violet-600 hover:text-violet-800 font-medium transition-colors duration-300 cursor-pointer"
+                disabled={isLoading}
               >
                 Login
               </button>

@@ -92,12 +92,14 @@ function ExpenseOverview() {
                 Track your daily spending patterns
               </p>
             </div>
-            <button
-              onClick={() => setIsDialogOpen(true)}
-              className="bg-violet-200 text-violet-600 px-6 py-2.5 rounded-lg font-normal text-lg cursor-pointer hover:bg-violet-400 hover:text-white"
-            >
-              + Add Expense
-            </button>
+          <button
+            onClick={() => setIsDialogOpen(true)}
+            className="bg-violet-200 text-violet-600 md:px-3 md:py-2.5  md:rounded-lg font-normal text-lg cursor-pointer hover:bg-violet-400 hover:text-white transition-colors duration-300 max-sm:rounded-full max-sm:size-12"
+          >
+            {/* Show only + on small screens, full text on larger screens */}
+            <span className="sm:hidden">+</span>
+            <span className="hidden sm:inline">+ Add Expense</span>
+          </button>
           </div>
         </CardHeader>
 

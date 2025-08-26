@@ -8,8 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAddExpenseMutation } from "../../features/expense/expenseApi";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function AddExpenseForm({ onClose }) {
   const [addExpense, { isLoading }] = useAddExpenseMutation();
@@ -60,16 +58,6 @@ function AddExpenseForm({ onClose }) {
         date: formData.date,
       }).unwrap();
 
-      toast.success("Expense added successfully!", {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
       onClose(); // Close the dialog after successful submission
 
       // Reset form
@@ -79,15 +67,6 @@ function AddExpenseForm({ onClose }) {
         date: new Date().toISOString().split("T")[0],
       });
     } catch (error) {
-      toast.error(error.data?.message || "Failed to add expense", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
       console.error("Error adding expense:", error);
     }
   };

@@ -8,8 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAddIncomeMutation } from "../../features/income/incomeApi";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function AddIncomeForm({ onClose }) {
   const [addIncome, { isLoading }] = useAddIncomeMutation();
@@ -57,16 +55,6 @@ function AddIncomeForm({ onClose }) {
         amount: parseFloat(formData.amount),
         date: formData.date
       }).unwrap();
-
-      toast.success('Income added successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
       
       onClose(); // Close the dialog after successful submission
       
@@ -78,15 +66,6 @@ function AddIncomeForm({ onClose }) {
       });
 
     } catch (error) {
-      toast.error(error.data?.message || 'Failed to add income', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
       console.error('Error adding income:', error);
     }
   };

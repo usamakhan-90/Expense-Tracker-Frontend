@@ -30,9 +30,6 @@ function RecentTranscation() {
           <h2 className="text-lg font-semibold text-gray-800">
             Recent Transactions
           </h2>
-          <button className="flex justify-center items-center gap-2 bg-violet-400 px-6 py-2 max-sm:px-4 max-sm:py-1 rounded text-white hover:bg-violet-600 cursor-pointer">
-            See All <BsArrowRight />
-          </button>
         </div>
 
         {recentTranscation?.slice(0, 6)?.map((item) => {
